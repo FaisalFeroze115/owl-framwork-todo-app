@@ -7,7 +7,7 @@ const { useRef } = hooks;
 const APP_TEMPLATE = xml /* xml */`
   <div class="todo-app">
       <input placeholder="Enter a new task" t-on-keyup="addTask" t-ref="add-input"/>
-      <div class="task-list" t-on-toggle-task="toggleTask">
+      <div class="task-list" t-on-toggle-task="toggleTask" t-on-delete-task="deleteTask">
           <div t-foreach="tasks" t-as="task" t-key="task.id">
               <Task task="task"/>
           </div>
@@ -30,9 +30,8 @@ export class App extends Component {
         const title = ev.target.value;
         ev.target.value = "";
         if(title){
-          let id = this.tasks.length + 1;
           let newTask = {
-            id: id,
+            id: this.nextId++,
             title: title,
             isCompleted: false,
           }
@@ -41,44 +40,17 @@ export class App extends Component {
     }
   }
 
+  nextId = 1;
+
   toggleTask(ev){
     const task = this.tasks.find(t => t.id === ev.detail.id);
     task.isCompleted = !task.isCompleted;
   }
 
-  tasks = useState([
-    {
-      id: 1,
-      title: "buy milk",
-      isCompleted: true,
-    },
-    {
-      id: 2,
-      title: "clean house",
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      title: "workout",
-      isCompleted: false,
-    },
-  ]);
+  deleteTask(ev){
+    const index = this.tasks.findIndex(t => t.id === ev.detail.id);
+    this.tasks.splice(index, 1);
+  }
 
-  // tasks = [
-  //   {
-  //     id: 1,
-  //     title: "buy milk",
-  //     isCompleted: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "clean house",
-  //     isCompleted: false,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "workout",
-  //     isCompleted: false,
-  //   },
-  // ];
+  tasks = useState([]);
 }
