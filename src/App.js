@@ -7,7 +7,7 @@ const { useRef } = hooks;
 const APP_TEMPLATE = xml /* xml */`
   <div class="todo-app">
       <input placeholder="Enter a new task" t-on-keyup="addTask" t-ref="add-input"/>
-      <div class="task-list">
+      <div class="task-list" t-on-toggle-task="toggleTask">
           <div t-foreach="tasks" t-as="task" t-key="task.id">
               <Task task="task"/>
           </div>
@@ -39,6 +39,11 @@ export class App extends Component {
           this.tasks.push(newTask)
         }
     }
+  }
+
+  toggleTask(ev){
+    const task = this.tasks.find(t => t.id === ev.detail.id);
+    task.isCompleted = !task.isCompleted;
   }
 
   tasks = useState([
